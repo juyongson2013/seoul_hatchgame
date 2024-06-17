@@ -37,7 +37,7 @@ const keys = {
     up: false
 };
 
-let score = 150; // 점수 변수 추가
+let score = 0; // 점수 변수 추가
 let highScore = localStorage.getItem('highScore') || 0; // 최고 점수 변수 추가
 let obstacleSpeed = 10; // 장애물 초기 속도
 
