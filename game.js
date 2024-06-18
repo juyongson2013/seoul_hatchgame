@@ -45,7 +45,7 @@ function createObstacle() {
     const obstacle = {
         x: canvas.width, // 장애물이 화면 오른쪽에서 시작하도록 설정
         y: canvas.height - groundHeight - 100, // 땅에 닿도록 설정
-        width: 50, // 장애물 너비를 50으로 설정
+        width:80, // 장애물 너비를 80으로 설정
         height: 100, // 장애물 높이를 100으로 설정
         speed: obstacleSpeed, // 현재 장애물 속도 설정
         image: obstacleImage,
