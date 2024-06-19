@@ -41,11 +41,15 @@ let score = 0; // 점수 변수 추가
 let highScore = localStorage.getItem('highScore') || 0; // 최고 점수 변수 추가
 let obstacleSpeed = 10; // 장애물 초기 속도
 
+let isInvincible = false; // 무적 모드 변수
+let isDeveloper = false; // 개발자 인증 변수
+let isDeveloperModePrompted = false; // 개발자 인증 창이 열렸는지 여부 변수
+
 function createObstacle() {
     const obstacle = {
         x: canvas.width, // 장애물이 화면 오른쪽에서 시작하도록 설정
         y: canvas.height - groundHeight - 100, // 땅에 닿도록 설정
-        width:80, // 장애물 너비를 80으로 설정
+        width: 80, // 장애물 너비를 80으로 설정
         height: 100, // 장애물 높이를 100으로 설정
         speed: obstacleSpeed, // 현재 장애물 속도 설정
         image: obstacleImage,
@@ -130,15 +134,17 @@ function updateFlyingObstacles() {
 }
 
 function detectCollision() {
-    obstacles.concat(flyingObstacles).forEach(obstacle => {
-        if (hatch.x < obstacle.x + obstacle.width &&
-            hatch.x + hatch.width > obstacle.x &&
-            hatch.y < obstacle.y + obstacle.height &&
-            hatch.y + hatch.height > obstacle.y) {
-            alert("게임 오버!");
-            resetGame();
-        }
-    });
+    if (!isInvincible) {
+        obstacles.concat(flyingObstacles).forEach(obstacle => {
+            if (hatch.x < obstacle.x + obstacle.width &&
+                hatch.x + hatch.width > obstacle.x &&
+                hatch.y < obstacle.y + obstacle.height &&
+                hatch.y + hatch.height > obstacle.y) {
+                alert("게임 오버!");
+                resetGame();
+            }
+        });
+    }
 }
 
 function update() {
@@ -187,6 +193,14 @@ function draw() {
     ctx.textAlign = 'right';
     ctx.fillText(`Score: ${score}`, canvas.width - 20, 50);
     ctx.fillText(`High Score: ${highScore}`, canvas.width - 20, 80); // 최고 점수 표시
+
+    // 무적 모드 표시
+    if (isInvincible) {
+        ctx.fillStyle = 'red';
+        ctx.font = '24px Arial';
+        ctx.textAlign = 'left';
+        ctx.fillText(`Invincible Mode`, 20, 50);
+    }
 }
 
 function resetGame() {
@@ -205,6 +219,13 @@ document.addEventListener('keydown', (e) => {
     if (e.code === 'ArrowUp' || e.code === 'Space') {
         keys.up = true; // 스페이스 키와 위쪽 화살표 키 추가
     }
+    if (e.code === 'KeyD' && !isDeveloperModePrompted) {
+        promptForDeveloperCode();
+    }
+    if (isDeveloper && e.code === 'KeyI') {
+        isInvincible = !isInvincible; // i 키를 눌러 무적 모드 토글
+        alert(`무적 모드가 ${isInvincible ? '활성화' : '비활성화'} 되었습니다.`);
+    }
 });
 
 document.addEventListener('keyup', (e) => {
@@ -213,6 +234,17 @@ document.addEventListener('keyup', (e) => {
     }
 });
 
+function promptForDeveloperCode() {
+    const developerCode = prompt("Enter developer code:");
+    if (developerCode === '1234567890') { // 원하는 개발자 코드를 설정하세요
+        isDeveloper = true;
+        isDeveloperModePrompted = true;
+        alert("Developer mode activated!");
+    } else {
+        alert("Incorrect developer code.");
+    }
+}
+
 hatch.image.onload = function() {
     update();
-}
+                          }
